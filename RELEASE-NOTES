@@ -1561,3 +1561,18 @@ RELEASE NOTES 4.4.5
 - CLI: Fixed cashtoken deserialization and serialization for serialize/deserialize tx RPCs (#3078) (The00Dustin)
 - Update for latest May 2026 upgrade + fix some long-standing Cash Token "dust" limit issues (#3218) (cculianu)
 - Remove some stale code comments (#3220) (The00Dustin)
+
+RELEASE NOTES 4.4.6
+
+- Fix for crash when using RPA wallets (cculianu)
+- Remove fixed value from network dust error (The00Dustin)
+- transaction.py: Fix for input fetcher rare crash (cculianu)
+- Fixup to caches.py, also expand the limit on the input fetcher tx cache (cculianu)
+- android: optionally set python in local.properties (Jonas Lundqvist)
+- android: replace testnet4 with chipnet (Jonas Lundqvist)
+- android: fix NPE in ListFragment on process restore (Jonas Lundqvist)
+- various build fixes for WINE version (cculianu, Axel Gembe)
+- build: update tor to version 0.4.9.11 -- necessary after Sept. 1 (Axel Gembe)
+- Handle race condition in util.make_dir (Jonas Lundqvist)
+- Fix for libzbar not building on newer macOS (cculianu)
+- Various other macOS related build fixes (cculianu)
