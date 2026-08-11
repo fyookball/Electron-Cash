@@ -41,6 +41,10 @@ function DoCodeSignMaybe { # ARGS: infoName fileOrDirName codesignIdentity
     codesign -f -v $deep -s "$identity" $preserve_arg $hardened_arg "$file" || fail "Could not code sign ${infoName}"
 }
 
+function IsLegacyMacOSBuilder { # ARGS: None; returns logical true if x86 and macOS Mojave, false otherwise
+  [ $(uname -m) == "x86_64" ] && (( $(uname -r | cut -f 1 -d .) <= 18 ))
+}
+
 cd $build_dir/../..
 
 VERSION=`git_describe_filtered`
@@ -76,7 +80,7 @@ have_brew=`which brew`
 have_macports=`which port`
 if [ -n "$have_brew" ]; then
     info "Ensuring build prerequisites are installed via brew"
-    if [ $(uname -m) == "x86_64" ] && (( $(uname -r | cut -f 1 -d .) <= 18 )); then
+    if IsLegacyMacOSBuilder; then
         # Legacy
         pkgs="autoconf automake coreutils gettext libtool openssl@1.1 readline sqlite3 xz zlib swig"
     else
@@ -239,7 +243,7 @@ contrib/make_zlib && contrib/make_libevent && contrib/make_openssl && contrib/ma
 
 info "Installing requirements..."
 python3 -m pip install -r ./contrib/deterministic-build/requirements.txt --user || fail "Could not install requirements"
-if [ $(uname -m) == "x86_64" ] && (( $(uname -r | cut -f 1 -d .) <= 18 )); then
+if IsLegacyMacOSBuilder; then
     # Building on mojave, with older brew, etc, this works.
     info "Legacy x86_64 macOS: Using pinned requirements-binaries"
     python3 -m pip install -r ./contrib/deterministic-build/requirements-binaries.txt --user || fail "Could not install binary requirements"
@@ -251,7 +255,7 @@ else
 fi
 
 info "Installing hardware wallet requirements..."
-if [ $(uname -m) == "x86_64" ] && (( $(uname -r | cut -f 1 -d .) <= 18 )); then
+if IsLegacyMacOSBuilder; then
     # Building on mojave, with older brew, etc, this works.
     info "Legacy x86_64 macOS: Using pinned requirements-hw"
     python3 -m pip install -r ./contrib/deterministic-build/requirements-hw.txt --user || fail "Could not install hardware wallet requirements"
